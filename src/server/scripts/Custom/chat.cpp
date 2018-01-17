@@ -33,19 +33,8 @@ public:
 			sWorld->SendGlobalText(message, NULL);
 			break;
 		
-		
-		case SEC_DEVELOPER:
-			snprintf(message, 1024, "|cff8B8B83[World][Developer][%s]: %s|r", player->GetName().c_str(), msg);
-			sWorld->SendGlobalText(message, NULL);
-			break;
-		
 		case SEC_ADMINISTRATOR:
 			snprintf(message, 1024, "|cffFF4500[World][Administrator][%s]: %s|r", player->GetName().c_str(), msg);
-			sWorld->SendGlobalText(message, NULL);
-			break;
-
-		case SEC_OWNER:
-			snprintf(message, 1024, "|cffFF4500[World][Owner][%s]: %s|r", player->GetName().c_str(), msg);
 			sWorld->SendGlobalText(message, NULL);
 			break;
 		
