@@ -270,7 +270,7 @@ bool WorldSession::Update(uint32 diff, PacketFilter& updater)
     //! *properly timed* packets, and we're now at the part of the queue where we find
     //! delayed packets that were re-enqueued due to improper timing. To prevent an infinite
     //! loop caused by re-enqueueing the same packets over and over again, we stop updating this session
-    //! and continue updating others. The re-enqueued packets will be handled in the next Update call for this session.
+    //! and continue updating others. The re-enqueued packets will be handled in the next Update call for this session.z
     while (m_Socket && !m_Socket->IsClosed() &&
             !_recvQueue.empty() && _recvQueue.peek(true) != firstDelayedPacket &&
             _recvQueue.next(packet, updater))
