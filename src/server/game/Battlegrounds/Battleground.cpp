@@ -530,6 +530,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
 
                     player->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
                     player->ResetAllPowers();
+					player->SetCommandStatusOff(CHEAT_CASTTIME);
                     if (!player->IsGameMaster())
                     {
                         // remove auras with duration lower than 30s
@@ -561,6 +562,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
                 {
                     player->RemoveAurasDueToSpell(SPELL_PREPARATION);
                     player->ResetAllPowers();
+					player->SetCommandStatusOff(CHEAT_CASTTIME);
                 }
             // Announce BG starting
             if (sWorld->getBoolConfig(CONFIG_BATTLEGROUND_QUEUE_ANNOUNCER_ENABLE))
@@ -1176,12 +1178,14 @@ void Battleground::AddPlayer(Player* player)
         {
             player->CastSpell(player, SPELL_ARENA_PREPARATION, true);
             player->ResetAllPowers();
+			player->SetCommandStatusOn(CHEAT_CASTTIME);
         }
     }
     else
     {
         if (GetStatus() == STATUS_WAIT_JOIN)                 // not started yet
             player->CastSpell(player, SPELL_PREPARATION, true);   // reduces all mana cost of spells.
+		player->SetCommandStatusOn(CHEAT_CASTTIME);
     }
 
     player->ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_KILL_CREATURE, ACHIEVEMENT_CRITERIA_CONDITION_BG_MAP, GetMapId(), true);
