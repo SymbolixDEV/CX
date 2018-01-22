@@ -869,6 +869,9 @@ Player::Player(WorldSession* session): Unit(true)
 
     m_SeasonalQuestChanged = false;
 
+    for (int i = 0; i < ARENA_TYPE_5v5 + 1; ++i)
+        skirmishStatus[i] = SKIRMISH_NONE;
+	
     SetPendingBind(0, 0);
 
     _activeCheats = CHEAT_NONE;

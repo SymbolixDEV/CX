@@ -17,6 +17,8 @@ set(scripts_STAT_SRCS
 	Custom/chat.cpp
 	Custom/Reforging.cpp
 	Custom/custom_Fast_Arena_Start.cpp
+	Custom/challenge_command.cpp
+	Custom/Arena_Gobject.cpp
 )
 
 message("  -> Prepared: Custom")

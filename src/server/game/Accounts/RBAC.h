@@ -678,7 +678,12 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_MODIFY_CURRENCY                        = 775, // only 4.3.4
     RBAC_PERM_COMMAND_DEBUG_PHASE                            = 776, // Only 4.3.4
 	RBAC_PERM_COMMAND_PLAYERINFO							 = 777,
-
+	
+	//Custom Commands
+	RBAC_PERM_COMMAND_2X2									 = 1001,
+	RBAC_PERM_COMMAND_3X3									 = 1002,
+	RBAC_PERM_COMMAND_5X5									 = 1003,
+	RBAC_PERM_COMMAND_CHALLENGE								 = 1004,
     // custom permissions 1000+
     RBAC_PERM_MAX
 };
