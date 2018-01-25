@@ -1769,6 +1769,9 @@ GroupJoinBattlegroundResult Group::CanJoinBattlegroundQueue(Battleground const* 
     if (memberscount > bgEntry->maxGroupSize)                // no MinPlayerCount for battlegrounds
         return ERR_BATTLEGROUND_NONE;                        // ERR_GROUP_JOIN_BATTLEGROUND_TOO_MANY handled on client side
 
+	if (arenaSlot == 2 && memberscount > 1)
+		return ERR_GROUP_JOIN_BATTLEGROUND_FAIL;
+
     // get a player as reference, to compare other players' stats to (arena team id, queue id based on level, etc.)
     Player* reference = GetFirstMember()->GetSource();
     // no reference found, can't join this way

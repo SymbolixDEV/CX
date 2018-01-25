@@ -22,6 +22,10 @@ set(scripts_STAT_SRCS
 	Custom/npc_1v1arena.cpp
 	Custom/npc_1v1arena.h
 	Custom/beastmastery.cpp
+	Custom/TemplateNPC.cpp
+	Custom/TemplateNPC.h
+	Custom/npc_solo3v3.cpp
+	Custom/npc_solo3v3.h
 )
 
 message("  -> Prepared: Custom")

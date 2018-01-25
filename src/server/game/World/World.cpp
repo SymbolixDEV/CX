@@ -81,7 +81,7 @@
 #include "Warden.h"
 #include "CalendarMgr.h"
 #include "BattlefieldMgr.h"
-
+#include "../../../scripts/Custom/TemplateNPC.h"
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
 ACE_Atomic_Op<ACE_Thread_Mutex, uint32> World::m_worldLoopCounter = 0;
@@ -1036,16 +1036,16 @@ void World::LoadConfigSettings(bool reload)
 
     m_bool_configs[CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN]            = sConfigMgr->GetBoolDefault("OffhandCheckAtSpellUnlearn", true);
 	
-	m_bool_configs[CONFIG_HUNTER_PETS_ENABLE]						 = sConfigMgr->GetBoolDefault("Hunter.Pets.Enabled", true);
-	
-	m_bool_configs[CONFIG_ARENA_1V1_ENABLE]							 = sConfigMgr->GetBoolDefault("Arena.1v1.Enable", true);
-	m_bool_configs[CONFIG_ARENA_1V1_ANNOUNCER]						 = sConfigMgr->GetBoolDefault("Arena.1v1.Announcer", false);
-	m_int_configs[CONFIG_ARENA_1V1_MIN_LEVEL]						 = sConfigMgr->GetIntDefault("Arena.1v1.MinLevel", 80);
-	m_int_configs[CONFIG_ARENA_1V1_COSTS]							 = sConfigMgr->GetIntDefault("Arena.1v1.Costs", 400000);
-	m_bool_configs[CONFIG_ARENA_1V1_VENDOR_RATING]					 = sConfigMgr->GetBoolDefault("Arena.1v1.VendorRating", false);
-	m_float_configs[CONFIG_ARENA_1V1_ARENAPOINTS_MULTI]				 = sConfigMgr->GetFloatDefault("Arena.1v1.ArenaPointsMulti", 0.64f);
-	m_bool_configs[CONFIG_ARENA_1V1_BLOCK_FORBIDDEN_TALENTS]		 = sConfigMgr->GetBoolDefault("Arena.1v1.BlockForbiddenTalents", true);
-
+	m_bool_configs[CONFIG_SOLO_3V3_ENABLE] = sConfigMgr->GetBoolDefault("Solo.3v3.Enable", 1);
+	m_int_configs[CONFIG_SOLO_3V3_MIN_LEVEL] = sConfigMgr->GetIntDefault("Solo.3v3.MinLevel", 80);
+	m_int_configs[CONFIG_SOLO_3V3_COSTS] = sConfigMgr->GetIntDefault("Solo.3v3.Costs", 400000);
+	m_float_configs[CONFIG_SOLO_3V3_ARENAPOINTS_MULTI] = sConfigMgr->GetFloatDefault("Solo.3v3.ArenaPointsMulti", 0.64f);
+	m_bool_configs[CONFIG_SOLO_3V3_FILTER_TALENTS] = sConfigMgr->GetBoolDefault("Solo.3v3.FilterTalents", true);
+	m_bool_configs[CONFIG_SOLO_3V3_VENDOR_RATING] = sConfigMgr->GetBoolDefault("Solo.3v3.VendorRating", true);
+	m_bool_configs[CONFIG_ARENA_CHECK_EQUIP_AND_TALENTS] = sConfigMgr->GetBoolDefault("Arena.CheckEquipAndTalents", true);
+	m_bool_configs[CONFIG_SOLO_3V3_CAST_DESERTER_ON_AFK] = sConfigMgr->GetBoolDefault("Solo.3v3.CastDeserterOnAfk", true);
+	m_bool_configs[CONFIG_SOLO_3V3_CAST_DESERTER_ON_LEAVE] = sConfigMgr->GetBoolDefault("Solo.3v3.CastDeserterOnLeave", true);
+	m_bool_configs[CONFIG_SOLO_3V3_STOP_GAME_INCOMPLETE] = sConfigMgr->GetBoolDefault("Solo.3v3.StopGameIncomplete", true);
 
     if (int32 clientCacheId = sConfigMgr->GetIntDefault("ClientCacheVersion", 0))
     {
@@ -1825,11 +1825,32 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "Calculate guild limitation(s) reset time...");
     InitGuildResetTime();
+		sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Talents...");
+    sTemplateNpcMgr->LoadTalentsContainer();
+
+    // Load templates for Template NPC #2
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Glyphs...");
+    sTemplateNpcMgr->LoadGlyphsContainer();
+
+    // Load templates for Template NPC #3
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Gear for Humans...");
+    sTemplateNpcMgr->LoadHumanGearContainer();
+
+    // Load templates for Template NPC #4
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Gear for Alliances...");
+    sTemplateNpcMgr->LoadAllianceGearContainer();
+
+    // Load templates for Template NPC #5
+    sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Gear for Hordes...");
+    sTemplateNpcMgr->LoadHordeGearContainer();
 
     LoadCharacterNameData();
 
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Initialize AuctionHouseBot...");
     auctionbot.Initialize();
+
+
+
 
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
 

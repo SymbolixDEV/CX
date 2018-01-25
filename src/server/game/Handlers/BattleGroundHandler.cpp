@@ -620,6 +620,9 @@ void WorldSession::HandleBattlemasterJoinArena(WorldPacket& recvData)
         case 2:
             arenatype = ARENA_TYPE_5v5;
             break;
+		case 3:
+ 			arenatype = ARENA_TYPE_3v3_SOLO;
+ 			break;
         default:
             TC_LOG_ERROR(LOG_FILTER_NETWORKIO, "Unknown arena slot %u at HandleBattlemasterJoinArena()", arenaslot);
             return;

@@ -42,10 +42,12 @@ public:
 
     void DistributeArenaPoints();
 
+	uint32 GenerateTempArenaTeamId();
     uint32 GenerateArenaTeamId();
     void SetNextArenaTeamId(uint32 Id) { NextArenaTeamId = Id; }
 
 protected:
+	uint32 NextTempArenaTeamId;
     uint32 NextArenaTeamId;
     ArenaTeamContainer ArenaTeamStore;
 };

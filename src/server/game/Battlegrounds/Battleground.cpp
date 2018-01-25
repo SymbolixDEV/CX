@@ -34,6 +34,8 @@
 #include "Util.h"
 #include "World.h"
 #include "WorldPacket.h"
+#include "ArenaTeamMgr.h"
+ #include "../../../src/server/scripts/custom/npc_solo3v3.h"
 
 namespace Trinity
 {
@@ -232,6 +234,26 @@ Battleground::~Battleground()
 
     for (BattlegroundScoreMap::const_iterator itr = PlayerScores.begin(); itr != PlayerScores.end(); ++itr)
         delete itr->second;
+
+	// Cleanup temp arena teams for solo 3v3
+ 	if (isArena() && isRated() && GetArenaType() == ARENA_TYPE_3v3_SOLO)
+	{
+		ArenaTeam *tempAlliArenaTeam = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamIdForTeam(ALLIANCE));
+		ArenaTeam *tempHordeArenaTeam = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamIdForTeam(HORDE));
+
+		if (tempAlliArenaTeam && tempAlliArenaTeam->GetId() >= 0xFFF00000)
+		{
+			sArenaTeamMgr->RemoveArenaTeam(tempAlliArenaTeam->GetId());
+			delete tempAlliArenaTeam;
+		}
+
+		if (tempHordeArenaTeam && tempHordeArenaTeam->GetId() >= 0xFFF00000)
+		{
+			sArenaTeamMgr->RemoveArenaTeam(tempHordeArenaTeam->GetId());
+			delete tempHordeArenaTeam;
+		}
+
+	}
 }
 
 void Battleground::Update(uint32 diff)
@@ -552,6 +574,7 @@ inline void Battleground::_ProcessJoin(uint32 diff)
                 }
 
             CheckArenaWinConditions();
+			CheckStartSolo3v3Arena();
         }
         else
         {
@@ -1923,6 +1946,50 @@ void Battleground::UpdateArenaWorldState()
     UpdateWorldState(0xe11, GetAlivePlayersCountByTeam(ALLIANCE));
 }
 
+void Battleground::CheckStartSolo3v3Arena()
+{
+	if (GetArenaType() != ARENA_TYPE_3v3_SOLO)
+		return;
+
+	if (GetStatus() != STATUS_IN_PROGRESS)
+		return;  // if CheckArenaWinConditions ends the game
+ 
+	bool someoneNotInArena = false;
+
+	ArenaTeam* team[2];
+	team[0] = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamIdForTeam(ALLIANCE));
+	team[1] = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamIdForTeam(HORDE));
+
+	ASSERT(team[0] && team[1]);
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (ArenaTeam::MemberList::iterator itr = team[i]->m_membersBegin(); itr != team[i]->m_membersEnd(); itr++)
+		{
+			Player* plr = sObjectAccessor->FindPlayer(itr->Guid);
+			if (!plr)
+			{
+				someoneNotInArena = true;
+				continue;
+			}
+
+			if (plr->GetInstanceId() != GetInstanceID())
+			{
+				if (sWorld->getBoolConfig(CONFIG_SOLO_3V3_CAST_DESERTER_ON_AFK))
+					plr->CastSpell(plr, 26013, true); // Deserter
+				someoneNotInArena = true;
+			}
+		}
+	}
+
+	if (someoneNotInArena && sWorld->getBoolConfig(CONFIG_SOLO_3V3_STOP_GAME_INCOMPLETE))
+	{
+		SetRated(false);
+		EndBattleground(LANG_BG_A_WINS);
+	}
+}
+
+
 void Battleground::SetBgRaid(uint32 TeamID, Group* bg_raid)
 {
     Group*& old_raid = TeamID == ALLIANCE ? m_BgRaids[TEAM_ALLIANCE] : m_BgRaids[TEAM_HORDE];
@@ -1981,7 +2048,10 @@ bool Battleground::CheckAchievementCriteriaMeet(uint32 criteriaId, Player const*
 uint8 Battleground::ClickFastStart(Player *player, GameObject *go)
 {
 	if (!isArena())
+	{
+ 		player->GetSession()->SendAreaTriggerMessage("You can't do this while not in arena.");
 		return 0;
+	}
 
 	std::set<uint64>::iterator pIt = m_playersWantFastStart.find(player->GetGUID());
 	if (pIt != m_playersWantFastStart.end() || GetStartDelayTime() < BG_START_DELAY_15S)
@@ -2005,6 +2075,9 @@ uint8 Battleground::ClickFastStart(Player *player, GameObject *go)
 	case ARENA_TYPE_5v5: //for 1v1 rated games fixed !
 		playersNeeded = 2;
 		break;
+	case ARENA_TYPE_3v3_SOLO: // For 3vs3 solo games
+ 		playersNeeded = 6;
+ 		break;
 	}
 
 	if (m_playersWantFastStart.size() == playersNeeded)
