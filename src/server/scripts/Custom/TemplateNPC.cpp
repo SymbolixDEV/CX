@@ -1,6 +1,5 @@
-#include "ScriptPCH.h"
 #include "TemplateNPC.h"
-#include "World.cpp"
+#define sTemplateNpcMgr sTemplateNPC::instance()
 
 void sTemplateNPC::LearnPlateMailSpells(Player* player)
 {
@@ -86,6 +85,7 @@ void sTemplateNPC::EquipTemplateGear(Player* player)
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), SOCK_ENCHANTMENT_SLOT_3, (*itr)->socket3);
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), BONUS_ENCHANTMENT_SLOT, (*itr)->bonusEnchant);
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), PRISMATIC_ENCHANTMENT_SLOT, (*itr)->prismaticEnchant);
+
 			}
 		}
 	}
@@ -102,6 +102,7 @@ void sTemplateNPC::EquipTemplateGear(Player* player)
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), SOCK_ENCHANTMENT_SLOT_3, (*itr)->socket3);
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), BONUS_ENCHANTMENT_SLOT, (*itr)->bonusEnchant);
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), PRISMATIC_ENCHANTMENT_SLOT, (*itr)->prismaticEnchant);
+
 			}
 		}
 	}
@@ -118,6 +119,7 @@ void sTemplateNPC::EquipTemplateGear(Player* player)
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), SOCK_ENCHANTMENT_SLOT_3, (*itr)->socket3);
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), BONUS_ENCHANTMENT_SLOT, (*itr)->bonusEnchant);
 				ApplyBonus(player, player->GetItemByPos(INVENTORY_SLOT_BAG_0, (*itr)->pos), PRISMATIC_ENCHANTMENT_SLOT, (*itr)->prismaticEnchant);
+
 			}
 		}
 	}
@@ -163,8 +165,6 @@ void sTemplateNPC::LoadGlyphsContainer()
 	for (GlyphContainer::const_iterator itr = m_GlyphContainer.begin(); itr != m_GlyphContainer.end(); ++itr)
 		delete *itr;
 
-	m_GlyphContainer.clear();
-
 	QueryResult result = CharacterDatabase.PQuery("SELECT playerClass, playerSpec, slot, glyph FROM template_npc_glyphs;");
 
 	uint32 oldMSTime = getMSTime();
@@ -173,6 +173,7 @@ void sTemplateNPC::LoadGlyphsContainer()
 	if (!result)
 	{
 		sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded 0 glyph templates. DB table `template_npc_glyphs` is empty!");
+		
 		return;
 	}
 
@@ -192,14 +193,13 @@ void sTemplateNPC::LoadGlyphsContainer()
 	}
 	while (result->NextRow());
 	sLog->outInfo(LOG_FILTER_SERVER_LOADING, ">> Loaded %u glyph templates in %u ms.", count, GetMSTimeDiffToNow(oldMSTime));
+	
 }
 
 void sTemplateNPC::LoadHumanGearContainer()
 {
 	for (HumanGearContainer::const_iterator itr = m_HumanGearContainer.begin(); itr != m_HumanGearContainer.end(); ++itr)
 		delete *itr;
-
-	m_HumanGearContainer.clear();
 
 	QueryResult result = CharacterDatabase.PQuery("SELECT playerClass, playerSpec, pos, itemEntry, enchant, socket1, socket2, socket3, bonusEnchant, prismaticEnchant FROM template_npc_human;");
 
@@ -241,8 +241,6 @@ void sTemplateNPC::LoadAllianceGearContainer()
 	for (AllianceGearContainer::const_iterator itr = m_AllianceGearContainer.begin(); itr != m_AllianceGearContainer.end(); ++itr)
 		delete *itr;
 
-	m_AllianceGearContainer.clear();
-
 	QueryResult result = CharacterDatabase.PQuery("SELECT playerClass, playerSpec, pos, itemEntry, enchant, socket1, socket2, socket3, bonusEnchant, prismaticEnchant FROM template_npc_alliance;");
 
 	uint32 oldMSTime = getMSTime();
@@ -283,8 +281,6 @@ void sTemplateNPC::LoadHordeGearContainer()
 	for (HordeGearContainer::const_iterator itr = m_HordeGearContainer.begin(); itr != m_HordeGearContainer.end(); ++itr)
 		delete *itr;
 
-	m_HordeGearContainer.clear();
-
 	QueryResult result = CharacterDatabase.PQuery("SELECT playerClass, playerSpec, pos, itemEntry, enchant, socket1, socket2, socket3, bonusEnchant, prismaticEnchant FROM template_npc_horde;");
 
 	uint32 oldMSTime = getMSTime();
@@ -324,20 +320,40 @@ std::string sTemplateNPC::GetClassString(Player* player)
 {
 	switch (player->getClass())
 	{
-	case CLASS_PRIEST:       return "Priest";      break;
-	case CLASS_PALADIN:      return "Paladin";     break;
-	case CLASS_WARRIOR:      return "Warrior";     break;
-	case CLASS_MAGE:         return "Mage";        break;
-	case CLASS_WARLOCK:      return "Warlock";     break;
-	case CLASS_SHAMAN:       return "Shaman";      break;
-	case CLASS_DRUID:        return "Druid";       break;
-	case CLASS_HUNTER:       return "Hunter";      break;
-	case CLASS_ROGUE:        return "Rogue";       break;
-	case CLASS_DEATH_KNIGHT: return "DeathKnight"; break;
+	case CLASS_PRIEST:
+		return "Priest";
+		break;
+	case CLASS_PALADIN:
+		return "Paladin";
+		break;
+	case CLASS_WARRIOR:
+		return "Warrior";
+		break;
+	case CLASS_MAGE:
+		return "Mage";
+		break;
+	case CLASS_WARLOCK:
+		return "Warlock";
+		break;
+	case CLASS_SHAMAN:
+		return "Shaman";
+		break;
+	case CLASS_DRUID:
+		return "Druid";
+		break;
+	case CLASS_HUNTER:
+		return "Hunter";
+		break;
+	case CLASS_ROGUE:
+		return "Rogue";
+		break;
+	case CLASS_DEATH_KNIGHT:
+		return "DeathKnight";
+		break;
 	default:
 		break;
 	}
-	return "Unknown"; // Fix warning, this should never happen
+	return ""; // Fix warning, this should never happen
 }
 
 bool sTemplateNPC::OverwriteTemplate(Player* player, std::string& playerSpecStr)
@@ -1163,72 +1179,72 @@ public:
 		{
 		case CLASS_PRIEST:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_wordfortitude:30|t|r Use Discipline Spec", GOSSIP_SENDER_MAIN, 0);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_holybolt:30|t|r Use Holy Spec", GOSSIP_SENDER_MAIN, 1);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shadow_shadowwordpain:30|t|r Use Shadow Spec", GOSSIP_SENDER_MAIN, 2);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_penance:30|t|r Use Discipline Spec", GOSSIP_SENDER_MAIN, 0);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_surgeoflight:30|t|r Use Holy Spec", GOSSIP_SENDER_MAIN, 1);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shadow_psychichorrors:30|t|r Use Shadow Spec", GOSSIP_SENDER_MAIN, 2);
 			}
 			break;
 		case CLASS_PALADIN:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_holybolt:30|t|r Use Holy Spec", GOSSIP_SENDER_MAIN, 3);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_devotionaura:30|t|r Use Protection Spec", GOSSIP_SENDER_MAIN, 4);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_auraoflight:30|t|r Use Retribution Spec", GOSSIP_SENDER_MAIN, 5);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_searinglight:30|t|r Use Holy Spec", GOSSIP_SENDER_MAIN, 3);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_blessingofprotection:30|t|r Use Protection Spec", GOSSIP_SENDER_MAIN, 4);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_paladin_divinestorm:30|t|r Use Retribution Spec", GOSSIP_SENDER_MAIN, 5);
 			}
 			break;
 		case CLASS_WARRIOR:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warrior_innerrage:30|t|r Use Fury Spec", GOSSIP_SENDER_MAIN, 6);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_rogue_eviscerate:30|t|r Use Arms Spec", GOSSIP_SENDER_MAIN, 7);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warrior_defensivestance:30|t|r Use Protection Spec", GOSSIP_SENDER_MAIN, 8);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warrior_titansgrip:30|t|r Use Fury Spec", GOSSIP_SENDER_MAIN, 6);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warrior_bladestorm:30|t|r Use Arms Spec", GOSSIP_SENDER_MAIN, 7);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warrior_shieldreflection:30|t|r Use Protection Spec", GOSSIP_SENDER_MAIN, 8);
 			}
 			break;
 		case CLASS_MAGE:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_holy_magicalsentry:30|t|r Use Arcane Spec", GOSSIP_SENDER_MAIN, 9);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_fire_flamebolt:30|t|r Use Fire Spec", GOSSIP_SENDER_MAIN, 10);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_frost_frostbolt02:30|t|r Use Frost Spec", GOSSIP_SENDER_MAIN, 11);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_mage_arcanebarrage:30|t|r Use Arcane Spec", GOSSIP_SENDER_MAIN, 9);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_mage_livingbomb:30|t|r Use Fire Spec", GOSSIP_SENDER_MAIN, 10);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_mage_deepfreeze:30|t|r Use Frost Spec", GOSSIP_SENDER_MAIN, 11);
 			}
 			break;
 		case CLASS_WARLOCK:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shadow_deathcoil:30|t|r Use Affliction Spec", GOSSIP_SENDER_MAIN, 12);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shadow_metamorphosis:30|t|r Use Demonology Spec", GOSSIP_SENDER_MAIN, 13);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shadow_rainoffire:30|t|r Use Destruction Spec", GOSSIP_SENDER_MAIN, 14);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warlock_haunt:30|t|r Use Affliction Spec", GOSSIP_SENDER_MAIN, 12);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shadow_demonform:30|t|r Use Demonology Spec", GOSSIP_SENDER_MAIN, 13);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_warlock_chaosbolt:30|t|r Use Destruction Spec", GOSSIP_SENDER_MAIN, 14);
 			}
 			break;
 		case CLASS_SHAMAN:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_nature_lightning:30|t|r Use Elemental Spec", GOSSIP_SENDER_MAIN, 15);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_nature_lightningshield:30|t|r Use Enhancement Spec", GOSSIP_SENDER_MAIN, 16);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_nature_magicimmunity:30|t|r Use Restoration Spec", GOSSIP_SENDER_MAIN, 17);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shaman_thunderstorm:30|t|r Use Elemental Spec", GOSSIP_SENDER_MAIN, 15);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_shaman_feralspirit:30|t|r Use Enhancement Spec", GOSSIP_SENDER_MAIN, 16);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_nature_healingwavelesser:30|t|r Use Restoration Spec", GOSSIP_SENDER_MAIN, 17);
 			}
 			break;
 		case CLASS_DRUID:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_nature_starfall:30|t|r Use Ballance Spec", GOSSIP_SENDER_MAIN, 18);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_racial_bearform:30|t|r Use Feral Spec", GOSSIP_SENDER_MAIN, 19);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_nature_healingtouch:30|t|r Use Restoration Spec", GOSSIP_SENDER_MAIN, 20);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_arcane_starfire:30|t|r Use Ballance Spec", GOSSIP_SENDER_MAIN, 18);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_druid_berserk:30|t|r Use Feral Spec", GOSSIP_SENDER_MAIN, 19);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_druid_flourish:30|t|r Use Restoration Spec", GOSSIP_SENDER_MAIN, 20);
 			}
 			break;
 		case CLASS_HUNTER:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_marksmanship:30|t|r Use Markmanship Spec", GOSSIP_SENDER_MAIN, 21);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_hunter_beasttaming:30|t|r Use Beastmastery Spec", GOSSIP_SENDER_MAIN, 22);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_Hunter_swiftstrike:30|t|r Use Survival Spec", GOSSIP_SENDER_MAIN, 23);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_hunter_chimerashot2:30|t|r Use Markmanship Spec", GOSSIP_SENDER_MAIN, 21);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_hunter_animalhandler:30|t|r Use Beastmastery Spec", GOSSIP_SENDER_MAIN, 22);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_golemstormbolt:30|t|r Use Survival Spec", GOSSIP_SENDER_MAIN, 23);
 			}
 			break;
 		case CLASS_ROGUE:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_rogue_eviscerate:30|t|r Use Assasination Spec", GOSSIP_SENDER_MAIN, 24);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_backstab:30|t|r Use Combat Spec", GOSSIP_SENDER_MAIN, 25);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_stealth:30|t|r Use Subtlety Spec", GOSSIP_SENDER_MAIN, 26);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_rogue_disembowel:30|t|r Use Assasination Spec", GOSSIP_SENDER_MAIN, 24);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_rogue_murderspree:30|t|r Use Combat Spec", GOSSIP_SENDER_MAIN, 25);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_rogue_shadowdance:30|t|r Use Subtlety Spec", GOSSIP_SENDER_MAIN, 26);
 			}
 			break;
 		case CLASS_DEATH_KNIGHT:
 			{
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_deathknight_bloodpresence:30|t|r Use Blood Spec", GOSSIP_SENDER_MAIN, 27);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_deathknight_frostpresence:30|t|r Use Frost Spec", GOSSIP_SENDER_MAIN, 28);
-				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_deathknight_unholypresence:30|t|r Use Unholy Spec", GOSSIP_SENDER_MAIN, 29);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_deathknight_butcher2:30|t|r Use Blood Spec", GOSSIP_SENDER_MAIN, 27);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\spell_deathknight_empowerruneblade2:30|t|r Use Frost Spec", GOSSIP_SENDER_MAIN, 28);
+				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, "|cff00ff00|TInterface\\icons\\ability_hunter_pet_bat:30|t|r Use Unholy Spec", GOSSIP_SENDER_MAIN, 29);
 			}
 			break;
 		}
@@ -1271,6 +1287,7 @@ public:
 		sTemplateNpcMgr->EquipTemplateGear(player);
 		sTemplateNpcMgr->LearnPlateMailSpells(player);
 
+		LearnWeaponSkills(player);
 
 		player->GetSession()->SendAreaTriggerMessage("Successfuly equipped %s %s template!", playerSpecStr.c_str(), sTemplateNpcMgr->GetClassString(player).c_str());
 	}

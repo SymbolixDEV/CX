@@ -2,35 +2,152 @@
 #define TALENT_FUNCTIONS_H
 
 #include "Define.h"
-#include <ace/Singleton.h>
-#include <ace/Thread_Mutex.h>
 
 enum templateSpells
 {
 	PLATE_MAIL = 750,
-	MAIL       = 8737
+	MAIL = 8737
 };
 
 enum WeaponProficiencies
 {
-	BLOCK           = 107,
-	BOWS            = 264,
-	CROSSBOWS       = 5011,
-	DAGGERS         = 1180,
-	FIST_WEAPONS    = 15590,
-	GUNS            = 266,
-	ONE_H_AXES      = 196,
-	ONE_H_MACES     = 198,
-	ONE_H_SWORDS    = 201,
-	POLEARMS        = 200,
-	SHOOT           = 5019,
-	STAVES          = 227,
-	TWO_H_AXES      = 197,
-	TWO_H_MACES     = 199,
-	TWO_H_SWORDS    = 202,
-	WANDS           = 5009,
-	THROW_WAR       = 2567
+	BLOCK = 107,
+	BOWS = 264,
+	CROSSBOWS = 5011,
+	DAGGERS = 1180,
+	FIST_WEAPONS = 15590,
+	GUNS = 266,
+	ONE_H_AXES = 196,
+	ONE_H_MACES = 198,
+	ONE_H_SWORDS = 201,
+	POLEARMS = 200,
+	SHOOT = 5019,
+	STAVES = 227,
+	TWO_H_AXES = 197,
+	TWO_H_MACES = 199,
+	TWO_H_SWORDS = 202,
+	WANDS = 5009,
+	THROW_WAR = 2567
 };
+
+static void LearnWeaponSkills(Player* player)
+{
+	WeaponProficiencies wepSkills[] = {
+		BLOCK, BOWS, CROSSBOWS, DAGGERS, FIST_WEAPONS, GUNS, ONE_H_AXES, ONE_H_MACES,
+		ONE_H_SWORDS, POLEARMS, SHOOT, STAVES, TWO_H_AXES, TWO_H_MACES, TWO_H_SWORDS, WANDS, THROW_WAR
+	};
+
+	uint32 size = 17;
+
+	for (uint32 i = 0; i < size; ++i)
+		if (player->HasSpell(wepSkills[i]))
+			continue;
+
+	switch (player->getClass())
+	{
+	case CLASS_WARRIOR:
+		player->learnSpell(THROW_WAR, false);
+		player->learnSpell(TWO_H_SWORDS, false);
+		player->learnSpell(TWO_H_MACES, false);
+		player->learnSpell(TWO_H_AXES, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(POLEARMS, false);
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(ONE_H_AXES, false);
+		player->learnSpell(GUNS, false);
+		player->learnSpell(FIST_WEAPONS, false);
+		player->learnSpell(DAGGERS, false);
+		player->learnSpell(CROSSBOWS, false);
+		player->learnSpell(BOWS, false);
+		player->learnSpell(BLOCK, false);
+		break;
+	case CLASS_PRIEST:
+		player->learnSpell(WANDS, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(SHOOT, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(DAGGERS, false);
+		break;
+	case CLASS_PALADIN:
+		player->learnSpell(TWO_H_SWORDS, false);
+		player->learnSpell(TWO_H_MACES, false);
+		player->learnSpell(TWO_H_AXES, false);
+		player->learnSpell(POLEARMS, false);
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(ONE_H_AXES, false);
+		player->learnSpell(BLOCK, false);
+		break;
+	case CLASS_ROGUE:
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(ONE_H_AXES, false);
+		player->learnSpell(GUNS, false);
+		player->learnSpell(FIST_WEAPONS, false);
+		player->learnSpell(DAGGERS, false);
+		player->learnSpell(CROSSBOWS, false);
+		player->learnSpell(BOWS, false);
+		break;
+	case CLASS_DEATH_KNIGHT:
+		player->learnSpell(TWO_H_SWORDS, false);
+		player->learnSpell(TWO_H_MACES, false);
+		player->learnSpell(TWO_H_AXES, false);
+		player->learnSpell(POLEARMS, false);
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(ONE_H_AXES, false);
+		break;
+	case CLASS_MAGE:
+		player->learnSpell(WANDS, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(SHOOT, false);
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(DAGGERS, false);
+		break;
+	case CLASS_SHAMAN:
+		player->learnSpell(TWO_H_MACES, false);
+		player->learnSpell(TWO_H_AXES, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(ONE_H_AXES, false);
+		player->learnSpell(FIST_WEAPONS, false);
+		player->learnSpell(DAGGERS, false);
+		player->learnSpell(BLOCK, false);
+		break;
+	case CLASS_HUNTER:
+		player->learnSpell(THROW_WAR, false);
+		player->learnSpell(TWO_H_SWORDS, false);
+		player->learnSpell(TWO_H_AXES, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(POLEARMS, false);
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(ONE_H_AXES, false);
+		player->learnSpell(GUNS, false);
+		player->learnSpell(FIST_WEAPONS, false);
+		player->learnSpell(DAGGERS, false);
+		player->learnSpell(CROSSBOWS, false);
+		player->learnSpell(BOWS, false);
+		break;
+	case CLASS_DRUID:
+		player->learnSpell(TWO_H_MACES, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(POLEARMS, false);
+		player->learnSpell(ONE_H_MACES, false);
+		player->learnSpell(FIST_WEAPONS, false);
+		player->learnSpell(DAGGERS, false);
+		break;
+	case CLASS_WARLOCK:
+		player->learnSpell(WANDS, false);
+		player->learnSpell(STAVES, false);
+		player->learnSpell(SHOOT, false);
+		player->learnSpell(ONE_H_SWORDS, false);
+		player->learnSpell(DAGGERS, false);
+		break;
+	default:
+		break;
+	}
+}
 
 struct TalentTemplate
 {
@@ -99,6 +216,11 @@ typedef std::vector<GlyphTemplate*> GlyphContainer;
 class sTemplateNPC
 {
 public:
+	static sTemplateNPC* instance()
+	{
+		static sTemplateNPC* instance = new sTemplateNPC();
+		return instance;
+	}
 	void LoadTalentsContainer();
 	void LoadGlyphsContainer();
 
@@ -131,5 +253,5 @@ public:
 	AllianceGearContainer m_AllianceGearContainer;
 	HordeGearContainer m_HordeGearContainer;
 };
-#define sTemplateNpcMgr ACE_Singleton<sTemplateNPC, ACE_Null_Mutex>::instance()
+#define sTemplateNpcMgr sTemplateNPC::instance()
 #endif

@@ -82,6 +82,7 @@
 #include "CalendarMgr.h"
 #include "BattlefieldMgr.h"
 #include "../../../scripts/Custom/TemplateNPC.h"
+
 ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
 ACE_Atomic_Op<ACE_Thread_Mutex, uint32> World::m_worldLoopCounter = 0;
@@ -1825,8 +1826,13 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "Calculate guild limitation(s) reset time...");
     InitGuildResetTime();
-		sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Talents...");
-    sTemplateNpcMgr->LoadTalentsContainer();
+
+
+
+    LoadCharacterNameData();
+
+	sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Talents...");
+	sTemplateNpcMgr->LoadTalentsContainer();
 
     // Load templates for Template NPC #2
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Glyphs...");
@@ -1843,8 +1849,6 @@ void World::SetInitialWorldSettings()
     // Load templates for Template NPC #5
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Loading Template Gear for Hordes...");
     sTemplateNpcMgr->LoadHordeGearContainer();
-
-    LoadCharacterNameData();
 
     sLog->outInfo(LOG_FILTER_SERVER_LOADING, "Initialize AuctionHouseBot...");
     auctionbot.Initialize();
