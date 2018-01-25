@@ -13,7 +13,7 @@
 #include "Battleground.h"
 #include "ArenaTeam.h"
 #include "Language.h"
-#include "npc_arena1v1.h"
+#include "npc_1v1arena.h"
 
 
 class npc_1v1arena : public CreatureScript
@@ -46,7 +46,7 @@ public:
 		Battleground* bg = sBattlegroundMgr->GetBattlegroundTemplate(BATTLEGROUND_AA);
 		if (!bg)
 		{
-			TC_LOG_ERROR("bg.arena", "Battleground: template bg (all arenas) not found");
+//		TC_LOG_ERROR("bg.arena", "Battleground: template bg (all arenas) not found");
 			return false;
 		}
 
@@ -168,7 +168,7 @@ public:
 		if(!player || !me)
 			return true;
 
-		if(sWorld->getBoolConfig(CONFIG_ARENA_1V1_ENABLE) == false)
+//	if(sWorld->GetBoolConfig(CONFIG_ARENA_1V1_ENABLE) == false)
 		{
 			ChatHandler(player->GetSession()).SendSysMessage("1v1 disabled!");
 			return true;

@@ -598,6 +598,12 @@ void WorldSession::HandleBattlemasterJoinArena(WorldPacket& recvData)
     // ignore if we already in BG or BG queue
     if (_player->InBattleground())
         return;
+    Creature* unit = GetPlayer()->GetMap()->GetCreature(guid);
+    if (!unit)
+        return;
+
+    if (!unit->IsBattleMaster())                             // it's not battle master
+        return;
 
     uint8 arenatype = 0;
     uint32 arenaRating = 0;
@@ -619,14 +625,6 @@ void WorldSession::HandleBattlemasterJoinArena(WorldPacket& recvData)
             return;
     }
 
-    if (_player->getSkirmishStatus((ArenaType)arenatype) != SKIRMISH_PREPEAR) {
-        Creature* unit = GetPlayer()->GetMap()->GetCreature(guid);
-        if (!unit)
-            return;
-
-        if (!unit->IsBattleMaster())                           
-            return;
-    }
 	
     //check existance
     Battleground* bg = sBattlegroundMgr->GetBattlegroundTemplate(BATTLEGROUND_AA);
@@ -750,9 +748,7 @@ void WorldSession::HandleBattlemasterJoinArena(WorldPacket& recvData)
         SendPacket(&data);
         TC_LOG_DEBUG(LOG_FILTER_BATTLEGROUND, "Battleground: player joined queue for arena, skirmish, bg queue type %u bg type %u: GUID %u, NAME %s", bgQueueTypeId, bgTypeId, _player->GetGUIDLow(), _player->GetName().c_str());
     }
-	
-    if (_player->getSkirmishStatus((ArenaType)arenatype) == SKIRMISH_PREPEAR)
-        _player->setSkirmishStatus((ArenaType)arenatype, SKIRMISH_JOINED);
+
 	
     sBattlegroundMgr->ScheduleQueueUpdate(matchmakerRating, arenatype, bgQueueTypeId, bgTypeId, bracketEntry->GetBracketId());
 }

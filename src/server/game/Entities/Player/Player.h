@@ -1058,6 +1058,12 @@ private:
     bool _isPvP;
 };
 
+enum CustomSkirmishStatus {
+    SKIRMISH_NONE       = 0,
+    SKIRMISH_PREPEAR,
+    SKIRMISH_JOINED
+};
+
 class Player : public Unit, public GridObject<Player>
 {
     friend class WorldSession;
@@ -1143,9 +1149,6 @@ class Player : public Unit, public GridObject<Player>
         void GiveLevel(uint8 level);
 
         void InitStatsForLevel(bool reapplyMods = false);
-		
-		CustomSkirmishStatus getSkirmishStatus(ArenaType type) { return skirmishStatus[type]; }
-		void setSkirmishStatus(ArenaType type, CustomSkirmishStatus status) { skirmishStatus[type] = status; }
 		
         // .cheat command related
         bool GetCommandStatus(uint32 command) const { return _activeCheats & command; }
@@ -2605,8 +2608,6 @@ class Player : public Unit, public GridObject<Player>
         bool m_bCanDelayTeleport;
         bool m_bHasDelayedTeleport;
 
-		CustomSkirmishStatus skirmishStatus[ARENA_TYPE_5v5 + 1];
-		
         // Temporary removed pet cache
         uint32 m_temporaryUnsummonedPetNumber;
         uint32 m_oldpetspell;

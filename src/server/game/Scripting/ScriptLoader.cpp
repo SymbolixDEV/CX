@@ -1401,9 +1401,10 @@ void AddSC_CPWS_Transmogrification();
 void AddSC_World_Chat();
 void AddSC_REFORGER_NPC();
 void AddSC_LearnSpellsOnLevelUp();
-void AddSC_skirmish_commandscript();
+//void AddSC_skirmish_commandscript();
 void AddSC_Arena_Scripts();
 void AddSC_npc_1v1arena();
+//void AddSC_beastmastery();
 #endif
 
 void AddCustomScripts()
@@ -1415,8 +1416,10 @@ void AddCustomScripts()
     AddSC_World_Chat();
 	AddSC_REFORGER_NPC();
 	AddSC_LearnSpellsOnLevelUp();
-	AddSC_skirmish_commandscript();
+	//AddSC_skirmish_commandscript();
 	AddSC_Arena_Scripts();
 	AddSC_npc_1v1arena();
+//	AddSC_beastmastery();
+
 #endif
 }

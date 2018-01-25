@@ -848,9 +848,6 @@ void Battleground::EndBattleground(uint32 winner)
         Player* player = _GetPlayer(itr, "EndBattleground");
         if (!player)
             continue;
-		
-		if (player->getSkirmishStatus((ArenaType)m_ArenaType) == SKIRMISH_JOINED)
-			player->setSkirmishStatus((ArenaType)m_ArenaType, SKIRMISH_NONE);
 
         // should remove spirit of redemption
         if (player->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))

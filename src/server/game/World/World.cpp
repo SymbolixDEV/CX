@@ -1036,6 +1036,8 @@ void World::LoadConfigSettings(bool reload)
 
     m_bool_configs[CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN]            = sConfigMgr->GetBoolDefault("OffhandCheckAtSpellUnlearn", true);
 	
+	m_bool_configs[CONFIG_HUNTER_PETS_ENABLE]						 = sConfigMgr->GetBoolDefault("Hunter.Pets.Enabled", true);
+	
 	m_bool_configs[CONFIG_ARENA_1V1_ENABLE]							 = sConfigMgr->GetBoolDefault("Arena.1v1.Enable", true);
 	m_bool_configs[CONFIG_ARENA_1V1_ANNOUNCER]						 = sConfigMgr->GetBoolDefault("Arena.1v1.Announcer", false);
 	m_int_configs[CONFIG_ARENA_1V1_MIN_LEVEL]						 = sConfigMgr->GetIntDefault("Arena.1v1.MinLevel", 80);

@@ -21,6 +21,7 @@ set(scripts_STAT_SRCS
 	Custom/Arena_Gobject.cpp
 	Custom/npc_1v1arena.cpp
 	Custom/npc_1v1arena.h
+	Custom/beastmastery.cpp
 )
 
 message("  -> Prepared: Custom")

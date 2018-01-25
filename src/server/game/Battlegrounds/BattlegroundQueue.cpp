@@ -127,15 +127,14 @@ bool BattlegroundQueue::SelectionPool::AddGroup(GroupQueueInfo* ginfo, uint32 de
 /*********************************************************/
 
 // add group or player (grp == NULL) to bg queue with the given leader and bg specifications
-GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, BattlegroundTypeId BgTypeId, PvPDifficultyEntry const*  bracketEntry, uint8 arenaType, bool isRated, bool isPremade, uint32 ArenaRating, uint32 MatchmakerRating, uint32 arenateamid)
-
+GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, BattlegroundTypeId BgTypeId, PvPDifficultyEntry const*  bracketEntry, uint8 ArenaType, bool isRated, bool isPremade, uint32 ArenaRating, uint32 MatchmakerRating, uint32 arenateamid)
 {
     BattlegroundBracketId bracketId = bracketEntry->GetBracketId();
 
     // create new ginfo
     GroupQueueInfo* ginfo            = new GroupQueueInfo;
     ginfo->BgTypeId                  = BgTypeId;
-    ginfo->ArenaType                 = arenaType;
+    ginfo->ArenaType                 = ArenaType;
     ginfo->ArenaTeamId               = arenateamid;
     ginfo->IsRated                   = isRated;
     ginfo->IsInvitedToBGInstanceGUID = 0;
@@ -147,7 +146,6 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, Battlegr
     ginfo->OpponentsTeamRating       = 0;
     ginfo->OpponentsMatchmakerRating = 0;
 
-    ginfo->IsCustomSkirmish          = (leader->getSkirmishStatus((ArenaType)arenaType) == SKIRMISH_JOINED);
     ginfo->Players.clear();
 
     //compute index (if group is premade or joined a rated match) to queues
@@ -635,45 +633,16 @@ bool BattlegroundQueue::CheckPremadeMatch(BattlegroundBracketId bracket_id, uint
 bool BattlegroundQueue::CheckNormalMatch(Battleground* bg_template, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers)
 {
     GroupsQueueType::const_iterator itr_team[BG_TEAMS_COUNT];
-	uint8 skirmishGroups = 0;
-	GroupQueueInfo *firstSkirmishGrp;
     for (uint32 i = 0; i < BG_TEAMS_COUNT; i++)
     {
         itr_team[i] = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].begin();
         for (; itr_team[i] != m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].end(); ++(itr_team[i]))
         {
-			if ((*(itr_team[i]))->IsCustomSkirmish)
+            if (!(*(itr_team[i]))->IsInvitedToBGInstanceGUID)
             {
-                if (!skirmishGroups)
-                    firstSkirmishGrp = *(itr_team[i]);
-				skirmishGroups++;
-                if (skirmishGroups == 2)
-                {
-                    m_SelectionPools[i].AddGroup(firstSkirmishGrp, maxPlayers);
-                    m_SelectionPools[i].AddGroup(*(itr_team[i]), maxPlayers);
-                 break;
-				 }
-            }
-        }
-    }
-
-    if (skirmishGroups != 2)
-    {
-        for (uint32 i = 0; i < BG_TEAMS_COUNT; i++)
-        {
-            itr_team[i] = m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].begin();
-            for (; itr_team[i] != m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].end(); ++(itr_team[i]))
-            {
-                if ((*(itr_team[i]))->IsCustomSkirmish)
-                    continue;
-
-                if (!(*(itr_team[i]))->IsInvitedToBGInstanceGUID)
-                {
-                    m_SelectionPools[i].AddGroup(*(itr_team[i]), maxPlayers);
-                    if (m_SelectionPools[i].GetPlayerCount() >= minPlayers)
+                m_SelectionPools[i].AddGroup(*(itr_team[i]), maxPlayers);
+                if (m_SelectionPools[i].GetPlayerCount() >= minPlayers)
                     break;
-				
-               }
             }
         }
     }
