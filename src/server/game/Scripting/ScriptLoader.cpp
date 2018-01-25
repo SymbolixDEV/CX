@@ -1403,6 +1403,7 @@ void AddSC_REFORGER_NPC();
 void AddSC_LearnSpellsOnLevelUp();
 void AddSC_skirmish_commandscript();
 void AddSC_Arena_Scripts();
+void AddSC_npc_1v1arena();
 #endif
 
 void AddCustomScripts()
@@ -1416,5 +1417,6 @@ void AddCustomScripts()
 	AddSC_LearnSpellsOnLevelUp();
 	AddSC_skirmish_commandscript();
 	AddSC_Arena_Scripts();
+	AddSC_npc_1v1arena();
 #endif
 }

@@ -19,6 +19,8 @@ set(scripts_STAT_SRCS
 	Custom/custom_Fast_Arena_Start.cpp
 	Custom/challenge_command.cpp
 	Custom/Arena_Gobject.cpp
+	Custom/npc_1v1arena.cpp
+	Custom/npc_1v1arena.h
 )
 
 message("  -> Prepared: Custom")
